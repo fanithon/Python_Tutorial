@@ -92,4 +92,7 @@ print(5>3)
 print(5<=3)
 print(5>=3)
 
-# 수정 됐는지 확인해보기
+# 수정 후 깃허브 올리는 방법
+# 1. git add .
+# 2. gid commit -m "commit 명 작성"
+# 3. git push origin master
