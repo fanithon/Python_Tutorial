@@ -112,3 +112,53 @@ my_bicycle3 = tuning_Bicycle(18,'blue')
 my_bicycle3.move(30)
 my_bicycle3.turn("좌")
 my_bicycle3.stop()
+
+#08 - 02 ) 클래스를 구성하는 변수와 함수
+
+# A ) 클래스에서 사용하는 변수
+# 클래스에서 사용하는 변수는 위치에 따라 클래스 변수( Class Variable ) 과 인스턴스 변수 (Instance Variable)로 구분 된다.
+# 클래스 변수 = 클래스 내에 있지만 함수 밖에서 '변수명 = 데이터' 형식으로 정의한 변수 / 클래스에서 생성한 모든 객체가 고통으로 사용 가능
+# 인스턴스 변수 = 클래스 내의 함수 안에서 'self.변수명 = 데이터' 형식으로 정의한 변수 / 클래스 내의 모든 함수에서 'self.변수명'으로 접근 가능
+
+# 클래스 변수와 인스턴스 변수를 사용한 자동차 클래스 예
+
+class Car():
+    instance_count = 0 # 클래스 변수 생성 및 초기화
+
+    def __init__(self, size, color):
+        self.size = size # 인스턴스 변수 생성 및 초기화
+        self.color = color # 인스턴스 변수 생성 및 초기화
+        Car.instance_count += 1 # 클래스 변수 이용
+        print("자동차 객체의 수 :{0}".format(Car.instance_count))
+
+    def move(self):
+        print("자동차 {0} & {1}가 움직입니다.".format(self.size,self.color))
+
+# 사용 방법
+car1 = Car('small','white')
+car2 = Car('Big','black')
+
+print("Car 클래스의 총 객체 개수 : {}".format(Car.instance_count))
+
+car1.move()
+car2.move()
+
+# 이름이 같은 클래스 변수와 인스턴스 변수가 있는 경우의 예
+class Car2():
+    count = 0 # 클래스 변수 생성 및 초기화
+
+    def __init__(self, size, num):
+        self.size = size #인스턴스 변수 생성 및 초기화
+        self.count = num   #인스턴스 변수 생성 및 초기화
+        Car2.count += 1  #클래스 변수 이용
+        print("자동차 객채의 수: Car.count = {0}".format(Car2.count))
+        print("인스턴수 변수 초기화 : self.count {0}".format(self.count))
+
+    def move(self):
+        print("자동차 {0} & {1}가 움직입니다.".format(self.size,self.count))
+
+car1 = Car2("Big",20)
+car2 = Car2("Small",30)
+
+car2.move()
+car1.move()
