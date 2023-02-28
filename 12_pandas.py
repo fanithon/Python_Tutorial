@@ -102,3 +102,149 @@ df3.describe()
 df3
 df3.mean() # columns를 기준으로 평균값 출력 ( 기본값 / axis=0 )
 df3.mean(axis=1) # index를 기준으로 평균값을 출력
+
+# 12 - 03 ) 데이터를 원하는 대로 선택하기
+KTX_data = {'경부선 KTX':[39060, 39896, 42005, 43621,41702,41266,32427],
+            '호남선 KTX':[7313,6967,6873,6626,8675,10622,9228],
+            '경전선 KTX':[3627,4168,4088,4424,4606,4984,5570],
+            '전라선 KTX':[309,1771,1954,2244,3146,3945,5766],
+            '동해선 KTX':[np.nan,np.nan,np.nan,np.nan,2395,3786,6667]}
+col_list=['경부선 KTX','호남선 KTX','경전선 KTX','전라선 KTX','동해선 KTX']
+index_list = ['2011','2012','2013','2014','2015','2016','2017']
+
+df_KTX= pd.DataFrame(KTX_data,columns=col_list,index=index_list)
+df_KTX
+
+df_KTX.index
+df_KTX.columns
+df_KTX.values
+
+# 데이터 중 일부만 보면서 분석 후 코드를 작성하면 편리
+df_KTX.head() # df.head(n) - 컬럼명 + 상위 순서 5개 인덱스(default value) 확인 | n에 숫자 입력시 원하는 만큼 확인 가능
+df_KTX.tail() # df.tail(n) - 컬럼명 + 하위 순서 5개 인덱스(default value) 확인 | 상동
+
+# DataFrame 데이터 내 연속 구간 행 데이터를 선택하는 방법
+'''
+DataFrame_data[행_시작위치:행_끝위치]
+'''
+df_KTX[1:2]
+df_KTX[2:5]
+
+# DataFrame 데이터 생성 시 index를 지정시 행을 선택도 가능
+'''
+DataFrame_data.loc[index_name]
+'''
+df_KTX.loc['2011']
+
+# DataFrame 데이터에서 index 항목 이름으로 구간을 지정해서 연속된 구간의 행을 선택도 가능하다
+'''
+DataFrame_data.loc[start_index_name:end_index_name]
+'''
+df_KTX.loc['2013':'2016']
+
+# DataFrmae 하나의 열만을 서낵하려면 다음과 같이 하나의 columns 항목 이름을 지정
+df_KTX['경부선 KTX']
+
+# DataFrame 열 선택 후 index 범위 지정 후 데이터 확인
+df_KTX['경부선 KTX']['2012':'2014']
+df_KTX['경부선 KTX'][2:5]
+
+# DataFrame 데이터 중 하나의 원소만 선택하는 방법
+df_KTX.loc['2016']['호남선 KTX']
+df_KTX.loc['2016','호남선 KTX']
+df_KTX['호남선 KTX']['2016']
+df_KTX['호남선 KTX'][5]
+df_KTX['호남선 KTX'].loc['2016']
+
+# DataFrame의 전치 구하는 방법
+df_KTX.T
+# DataFrame 데이터 변수 df_KTX 열 항목 지정 후 열의 순서 변경
+df_KTX[col_list]
+
+# 12 - 03 ) 데이터 통합하기
+# A ) 세로 방향으로 통합하기
+'''
+DataFrame_data1.append(DataFrame_data2 [,ignore_index=True])
+세로 방향으로 DataFrame_data1에 data2가 추가돼서 DataFrame데이터로 반환 
+ignore_index=True 미 입력시 DataFrame 데이터에는 기존의 데이터 index가 그대로 유지
+'''
+
+df1 = pd.DataFrame({'Class1':[95,92,98,100],
+                    'Class2':[91,93,97,99]})
+df2 = pd.DataFrame({'Class1':[87,89],
+                    'Class2':[85,90]})
+df1.append(df2, ignore_index=True) # append 후 index를 순차적으로 증가하게 하려면 파라미터를 부여
+
+df3 = pd.DataFrame({'Class1':[96,83]})
+df2.append(df3, ignore_index=True) # 열이 비어있는 경우 Nan으로 채워짐
+
+# B ) 가로 방향으로 통합하기
+'''
+DataFrame_data1.join(DataFrame_data2)
+'''
+
+df4 = pd.DataFrame({'Class3':[93,91,95,98]})
+df1.join(df4)
+
+# index 라벨 지정 된 DataFrame의 경우에도 index가 같으면 Join()을 이용해 데이터 추가 가능
+index_label=['a','b','c','d']
+df1a = pd.DataFrame({'Class1':[95,92,98,100],
+                     'Class2':[91,93,97,99]}, index=index_label)
+df4a = pd.DataFrame({'Class3':[93,91,95,97]}, index=index_label)
+df1a.join(df4a)
+
+# C ) 특정 열을 기준으로 통합하기
+'''
+DataFrame_left_data.merge(DataFrame_right_data)
+'''
+df_A_B = pd.DataFrame({'판매월':['1월','2월','3월','4월'],
+                       '제품A':[100,150,200,130],
+                       '제품B':[90,110,140,170]})
+df_C_D = pd.DataFrame({'판매월':['1월','2월','3월','4월'],
+                       '제품C':[112,141,203,134],
+                       '제품D':[90,110,140,170]})
+df_A_B.merge(df_C_D) # 두 데이터 프레임에 모두 있는 것이 '판매월'인 열 데이터이므로 이를 중심으로 데이터를 통합 시 사용
+
+# 두개의 DataFrame 데이터가 특정 열을 기준으로 일부만 공통된 값을 갖는 경우에 통합하려면 merge() 선택 인자를 지정하면 됨
+'''
+DataFrame_left_data.merge(DataFrame_right_data, how=merge_method, on=key_label)
+'''
+''''
+how 선택 인자    설명
+left           왼쪽 데이터는 모두 선택하고 지정된 열(key)에 값이 있는 오른쪽 데이터를 선택
+right          오른쪽 데이터는 모두 선택하고 지정된 열(key)에 값이 있는 왼쪽 데이터를 선택
+outer          지정된 열(key)을 기준으로 왼쪽과 오른쪽 데이터를 모두 선택
+inner          지정된 열(key)을 기준으로 왼쪽과 오른쪽 데이터 중 공통 항목만 선택(기본값)
+'''
+df_left = pd.DataFrame({'key':['A','B','C'], 'left':[1,2,3]})
+df_right = pd.DataFrame({'key':['A','B','D'], 'right':[4,5,6]})
+df_left.merge(df_right, how='left',on='key')
+df_left.merge(df_right, how='right',on='key')
+df_left.merge(df_right, how='outer',on='key')
+df_left.merge(df_right, how='inner', on='key')
+
+# 12 - 03 ) 데이터 파일을 읽고 쓰기
+# A ) 표 형식의 데이터 파일을 읽기
+# read_csv()
+'''
+DataFrame_data = pd.read_csv(file_name [, options])
+'''
+
+# B ) 표 형식의 데이터를 파일로 쓰기
+# to_csv()
+'''
+DataFrame_data.to_csv(file_name, [, options])
+'''
+df_WH = pd.DataFrame({'Weight':[62,67,55,74],
+                      'Height':[165,177,160,180]},
+                      index=['ID_1','ID_2','ID_3','ID_4'])
+bmi = round(df_WH['Weight']/(df_WH['Height']/100)**2,1)
+df_WH['BMI'] = bmi
+df_WH.to_csv(r'C:\Users\hwan\Desktop\study\01.Python Tutorial\Python_Tutorial\myPycode\DataFrame.csv')
+
+df_pr = pd.DataFrame({'판매가격':[2000,3000,5000,10000],
+                      '판매량':[32,53,40,25]},
+                      index=['P1001','P1002','P1003','P1004'])
+df_pr.index.name='제품번호'
+file_name = 'C:\Users\hwan\Desktop\study\01.Python Tutorial\Python_Tutorial\myPycode\DataFrame_cp949.csv'
+df_pr.to_csv(file_name, sep="", encoding='cp949')
